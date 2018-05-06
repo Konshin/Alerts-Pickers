@@ -383,7 +383,11 @@ class ViewController: UIViewController {
             
         case .locationPicker:
             let alert = UIAlertController(style: self.alertStyle)
-            alert.addLocationPicker { location in Log(location) }
+            if #available(iOS 11.0, *) {
+                alert.addLocationPicker { location in Log(location) }
+            } else {
+                // Fallback on earlier versions
+            }
             alert.addAction(title: "Cancel", style: .cancel)
             alert.show()
             

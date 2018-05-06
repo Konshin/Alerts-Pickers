@@ -101,7 +101,9 @@ final public class TelegramPickerViewController: UIViewController {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
         $0.decelerationRate = UIScrollViewDecelerationRateFast
-        $0.contentInsetAdjustmentBehavior = .never
+        if #available(iOS 11.0, *) {
+            $0.contentInsetAdjustmentBehavior = .never
+        }
         $0.contentInset = UI.insets
         $0.backgroundColor = .clear
         $0.maskToBounds = false
@@ -211,7 +213,11 @@ final public class TelegramPickerViewController: UIViewController {
             let alert = UIAlertController(style: .alert, title: "Permission denied", message: "\(productName) does not have access to contacts. Please, allow the application to access to your photo library.")
             alert.addAction(title: "Settings", style: .destructive) { action in
                 if let settingsURL = URL(string: UIApplicationOpenSettingsURLString) {
-                    UIApplication.shared.open(settingsURL)
+                    if #available(iOS 10.0, *) {
+                        UIApplication.shared.open(settingsURL)
+                    } else {
+                        UIApplication.shared.openURL(settingsURL)
+                    }
                 }
             }
             alert.addAction(title: "OK", style: .cancel) { [unowned self] action in
@@ -273,8 +279,10 @@ final public class TelegramPickerViewController: UIViewController {
             break
             
         case .location:
-            alertController?.addLocationPicker { location in
-                self.selection?(TelegramSelectionType.location(location))
+            if #available(iOS 11.0, *) {
+                alertController?.addLocationPicker { location in
+                    self.selection?(TelegramSelectionType.location(location))
+                }
             }
             
         case .contact:
